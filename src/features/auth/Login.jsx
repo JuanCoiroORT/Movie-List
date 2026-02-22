@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, loginError } from "./authSlice";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -15,21 +16,28 @@ function Login() {
 
   const navigate = useNavigate();
 
+  const users = useSelector((state) => state.auth.users);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (usuario === "admin" && password === "admin") {
-      const authData = {
-        user: { username: usuario },
-        token: "fake-token",
-      };
-      dispatch(loginSuccess(authData));
 
-      localStorage.setItem("auth", JSON.stringify(authData));
+    const user = users.find(
+      (user) => user.email === usuario && user.password === password,
+    );
 
-      navigate("/dashboard");
-    } else {
+    if (!user) {
       dispatch(loginError("Credenciales inválidas"));
+      return;
     }
+
+    const authData = {
+      user: { username: usuario },
+      token: "fake-token",
+    };
+    dispatch(loginSuccess(authData));
+
+    localStorage.setItem("auth", JSON.stringify(authData));
+    navigate("/dashboard");
   };
 
   return (
@@ -58,6 +66,9 @@ function Login() {
         <button type="submit" disabled={isDisabled}>
           Ingresar
         </button>
+        <p>
+          ¿No tenés cuenta? <Link to="/register">Registrate acá</Link>
+        </p>
         {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
