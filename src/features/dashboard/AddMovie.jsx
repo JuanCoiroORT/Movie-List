@@ -7,13 +7,15 @@ function AddMovie() {
   const [nombre, setNombre] = useState("");
   const [categoria, setCategoria] = useState("");
   const [fecha, setFecha] = useState("");
+  const [edadMinima, setEdadMinima] = useState("");
 
   const hoy = new Date().toISOString().split("T")[0];
 
   const isDisabled =
     nombre.trim() === "" ||
     categoria.trim() === "" ||
-    fecha.trim() === "";
+    fecha.trim() === "" ||
+    edadMinima.trim() === "";
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,7 +29,8 @@ function AddMovie() {
             id: Date.now(),
             nombre,
             categoria,
-            fecha
+            fecha,
+            edadMinima: parseInt(edadMinima)
         };
 
         dispatch(addMovie(newMovie));
@@ -35,6 +38,7 @@ function AddMovie() {
         setNombre("");
         setCategoria("");
         setFecha("");
+        setEdadMinima("");
     };
 
     return (
@@ -70,6 +74,15 @@ function AddMovie() {
                         value={fecha}
                         max = {hoy}
                         onChange={(e) => setFecha(e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <label>Edad Mínima:</label>
+                    <input
+                        type="number"
+                        value={edadMinima}
+                        onChange={(e) => setEdadMinima(e.target.value)}
                     />
                 </div>
 

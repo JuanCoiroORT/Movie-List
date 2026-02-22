@@ -6,7 +6,8 @@ import AddMovie from "./AddMovie";
 import MovieList from "./MovieList";
 import Filters from "./Filters";
 import Reports from "./Reports";
-import Charts from "./Charts";
+import ChartCategory from "./ChartCategory";
+import ChartCalification from "./ChartCalification";
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ function Dashboard() {
       <Filters />
       <MovieList />
       <Reports />
-      <Charts />
+      <ChartCategory />
+      <ChartCalification />
       <button onClick={handleLogout}>Cerrar Sesión</button>
     </div>
   );
