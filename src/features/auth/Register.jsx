@@ -1,52 +1,53 @@
-import {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {registerSuccess, registerError} from './authSlice';
-
-
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { registerUser, fetchCountries } from "./authSlice";
 
 function Register() {
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.auth.registerError);
-  const users = useSelector((state) => state.auth.users);
+  const { loading, error } = useSelector((state) => state.auth);
+  const countries = useSelector((state) => state.auth.countries);
+  const countriesStatus = useSelector((state) => state.auth.countriesStatus);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
 
-  const isDisabled = email.trim() === '' || password.trim() === '';
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
-  const handleSubmit = (e) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [idCountry, setIdCountry] = useState("");
+
+  //Traer países al cargar el componente
+  useEffect(() => {
+    if (countriesStatus === "idle") {
+      dispatch(fetchCountries());
+    }
+  }, [countriesStatus, dispatch]);
+
+  const isDisabled =
+    username.trim() === "" || password.trim() === "" || idCountry === "";
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const existingUser = users.find((user) => user.email === email);
-    if (existingUser) {
-      dispatch(registerError("El email ya está registrado"));
-      return;
+    if (username.length < 3) return;
+    if (password.length < 6) return;
+    try {
+      await dispatch(
+        registerUser({
+          usuario: username,
+          password: password,
+          idPais: idCountry,
+        }),
+      ).unwrap();
+      navigate("/dashboard");
+    } catch (error) {
+      // Redux maneja el error en el estado, así que no es necesario hacer nada aquí
     }
-
-    //Validacion email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      dispatch(registerError("El email no es válido"));
-      return;
-    }
-
-    //Validacion password
-    if (password.length < 6) {
-      dispatch(registerError("La contraseña debe tener al menos 6 caracteres"));
-      return;
-    }
-
-    const newUser = {
-      id: Date.now(),
-      email,
-      password,
-    }
-
-    dispatch(registerSuccess(newUser));
-    alert("Usuario registrado exitosamente");
-
-    setEmail('');
-    setPassword('');
   };
 
   return (
@@ -54,11 +55,11 @@ function Register() {
       <h2>Register Page</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email:</label>
+          <label>Username:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
@@ -69,8 +70,22 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <div>
+          <label>Country:</label>
+          <select
+            value={idCountry}
+            onChange={(e) => setIdCountry(e.target.value)}
+          >
+            <option value="">Selecciona un país</option>
+            {countries.map((country) => (
+              <option key={country.id} value={country.id}>
+                {country.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        {error && <p style={{color: 'red'}}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
         <button type="submit" disabled={isDisabled}>
           Registrarse

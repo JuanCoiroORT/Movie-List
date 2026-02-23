@@ -1,43 +1,28 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, loginError } from "./authSlice";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "./authSlice";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
-  const isDisabled = usuario.trim() === "" || password.trim() === "";
-
   const dispatch = useDispatch();
-
-  const error = useSelector((state) => state.auth.error);
-
   const navigate = useNavigate();
 
-  const users = useSelector((state) => state.auth.users);
+  const { loading, error, token } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const isDisabled = usuario.trim() === "" || password.trim() === "";
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = users.find(
-      (user) => user.email === usuario && user.password === password,
-    );
-
-    if (!user) {
-      dispatch(loginError("Credenciales inválidas"));
-      return;
+    try {
+      await dispatch(loginUser({ usuario, password })).unwrap();
+      navigate("/dashboard");
+    } catch (error) {
+      // Redux maneja el error en el estado, así que no es necesario hacer nada aquí
     }
-
-    const authData = {
-      user: { username: usuario },
-      token: "fake-token",
-    };
-    dispatch(loginSuccess(authData));
-
-    localStorage.setItem("auth", JSON.stringify(authData));
-    navigate("/dashboard");
   };
 
   return (
@@ -63,13 +48,13 @@ function Login() {
           />
         </div>
 
-        <button type="submit" disabled={isDisabled}>
-          Ingresar
+        <button type="submit" disabled={isDisabled || loading}>
+          {loading ? "Ingresando..." : "Ingresar"}
         </button>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <p>
           ¿No tenés cuenta? <Link to="/register">Registrate acá</Link>
         </p>
-        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   );

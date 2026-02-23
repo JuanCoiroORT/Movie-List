@@ -15,7 +15,6 @@ function Dashboard() {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("auth");
     navigate("/");
   };
 
