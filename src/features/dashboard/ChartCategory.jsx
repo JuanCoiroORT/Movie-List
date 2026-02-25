@@ -9,12 +9,20 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Charts() {
+export default function ChartsCategory() {
     const movies = useSelector((state) => state.movies.list);
+    const categories = useSelector((state) => state.movies.categories);
+
+    //Mapear idCategoria a nombre
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.nombre;
+      return acc;
+    }, {});
 
     //Conteo por categoria
     const conteo = movies.reduce((acc, movie) => {
-      acc[movie.categoria] = (acc[movie.categoria] || 0) + 1;
+      const nombreCategoria = categoryMap[movie.idCategoria] || "Sin categoría";
+      acc[nombreCategoria] = (acc[movie.categoria] || 0) + 1;
       return acc;
     }, {});
 

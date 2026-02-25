@@ -8,18 +8,38 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#ff4d4f", "#1890ff"];
+const COLORS = ["#52c41a", "#1890ff", "#faad14"];
 
 export default function ChartCalification() {
   const movies = useSelector((state) => state.movies.list);
 
-  const total = movies.length;
-  const mas12 = movies.filter((movie) => movie.edadMinima >= 12).length;
-  const resto = total - mas12;
+  if (movies.length === 0) return null;
+
+  const hoy = new Date();
+
+  let ultimaSemana = 0;
+  let ultimos30 = 0;
+  let mayores30 = 0;
+
+  movies.forEach((movie) => {
+    const fecha = new Date(movie.fechaEstreno + "T00:00:00");
+    const diffDays = (hoy.getTime() - fecha.getTime()) / (1000 * 60 * 60 * 24);
+
+    console.log(movie.fechaEstreno, diffDays);
+
+    if (diffDays <= 7) {
+      ultimaSemana++;
+    } else if (diffDays <= 30) {
+      ultimos30++;
+    } else {
+      mayores30++;
+    }
+  });
 
   const data = [
-    { name: "+12", value: mas12 },
-    { name: "Menores de 12", value: resto },
+    { name: "Última semana", value: ultimaSemana },
+    { name: "Últimos 30 días", value: ultimos30 },
+    { name: "Más de 30 días", value: mayores30 },
   ];
 
   return (
@@ -30,7 +50,7 @@ export default function ChartCalification() {
             data={data}
             dataKey="value"
             nameKey="name"
-            outerRadius={130}
+            outerRadius={120}
             label
           >
             {data.map((entry, index) => (

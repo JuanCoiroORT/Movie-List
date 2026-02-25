@@ -12,7 +12,7 @@ function Filters() {
         value={filter}
         onChange={(e) => dispatch(setFilter(e.target.value))}
       >
-        <option value="All">Todas</option>
+        <option value="all">Todas</option>
         <option value="week">Última semana</option>
         <option value="month">Último mes</option>
       </select>

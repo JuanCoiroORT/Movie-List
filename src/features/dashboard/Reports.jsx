@@ -2,57 +2,63 @@ import { useSelector } from "react-redux";
 
 function Reports() {
   const movies = useSelector((state) => state.movies.list);
+  const categories = useSelector((state) => state.movies.categories);
 
-  if (movies.length === 0) {
+  if (movies.length === 0 || categories.length === 0) {
     return <p>No hay datos para mostrar informes</p>;
   }
 
-  //Categoria favorita
+  // Mapeo de categorías a emojis
+  const categoriaEmojis = {
+    Acción: "💪",
+    Drama: "😭",
+    Comedia: "😂",
+    "Ciencia Ficción": "👽",
+    Terror: "😱",
+    Animación: "🎨",
+    Documental: "📚",
+    Romance: "❤️",
+    Aventura: "🏔️",
+    Fantasía: "🧙‍♂️",
+  };
 
-  const conteo = {};
-
-  movies.forEach((movie) => {
-    conteo[movie.categoria] = (conteo[movie.categoria] || 0) + 1;
+  //Mapear idCateoria de la pelicula al nombre de la categoria
+  const moviesConNombreCategoria = movies.map((movie) => {
+    const cat = categories.find((c) => c.id === movie.idCategoria);
+    return { ...movie, categoria: cat ? cat.nombre : "Sin categoría" };
   });
 
+  //Conteo por categoria
+  const conteo = {};
+  moviesConNombreCategoria.forEach((movie) => {
+    const nombreCategoria = movie.categoria;
+    conteo[nombreCategoria] = (conteo[nombreCategoria] || 0) + 1;
+  });
+
+  //Determinar categoria favorita
   const valores = Object.values(conteo);
   const maxCantidad = Math.max(...valores);
-
   const categoriasConMax = Object.keys(conteo).filter(
     (categoria) => conteo[categoria] === maxCantidad,
   );
+  let categoriaFavorita =
+    categoriasConMax.length === 1 ? categoriasConMax[0] : null;
 
-  let categoriaFavorita = null;
-
-  if (categoriasConMax.length === 1) {
-    categoriaFavorita = categoriasConMax[0];
-  }
-
-  //Situacion personal
-  const comedias = conteo["Comedia"] || 0;
-  const accion = conteo["Acción"] || 0;
-  const drama = conteo["Drama"] || 0;
-
-  let estado = "😐";
-
-  if (comedias > accion && comedias > drama) {
-    estado = "😂";
-  }
-  if (accion > comedias && accion > drama) {
-    estado = "💪";
-  }
-  if (drama > comedias && drama > accion) {
-    estado = "😭";
-  }
+  //Emoji segun categoria favorita
+  const emojiFavorito = categoriaFavorita
+    ? categoriaEmojis[categoriaFavorita]
+    : "😐";
 
   return (
     <div>
       <h2>Informes</h2>
       <p>
-        Categoría favorita: {""}
-        {categoriaFavorita ? categoriaFavorita : "No hay categoría favorita"}
+        Categoría favorita:{" "}
+        {categoriaFavorita ? categoriaFavorita : "No hay categoría favorita"}{" "}
       </p>
-      <p>Situación personal: {estado}</p>
+      <p>
+        Situación Personal: {emojiFavorito}
+      </p>
     </div>
   );
 }
