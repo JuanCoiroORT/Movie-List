@@ -50,15 +50,26 @@ function Reports() {
     : "😐";
 
   return (
-    <div>
-      <h2>Informes</h2>
-      <p>
-        Categoría favorita:{" "}
-        {categoriaFavorita ? categoriaFavorita : "No hay categoría favorita"}{" "}
-      </p>
-      <p>
-        Situación Personal: {emojiFavorito}
-      </p>
+    <div className="card shadow-sm p-4 mb-4">
+      <h4 className="text-center mb-4">Informes</h4>
+
+      {categoriaFavorita ? (
+        <>
+          <div className="text-center mb-3">
+            <span className="fw-semibold">Categoría favorita:</span>
+            <div className="fs-5 mt-1">{categoriaFavorita}</div>
+          </div>
+
+          <div className="text-center">
+            <span className="fw-semibold">Situación Personal:</span>
+            <div className="fs-2 mt-1">{emojiFavorito}</div>
+          </div>
+        </>
+      ) : (
+        <div className="alert alert-info text-center mb-0">
+          No hay categoría favorita
+        </div>
+      )}
     </div>
   );
 }

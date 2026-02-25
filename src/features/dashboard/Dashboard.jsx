@@ -26,15 +26,32 @@ function Dashboard() {
   };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <AddMovie />
-      <Filters />
-      <MovieList />
-      <Reports />
-      <ChartCategory />
-      <ChartCalification />
-      <button onClick={handleLogout}>Cerrar Sesión</button>
+    <div className="container-fluid min-vh-100 bg-success-subtle py-4">
+      <div className="container">
+        <div className="d-flex justify-content-between align-items-center mb-4 ">
+          <h1 className="text-center flex-grow-1 m-0">Dashboard</h1>
+          <button
+            className="btn btn-danger ms-3"
+            onClick={handleLogout}
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+
+        <AddMovie />
+        <Filters />
+        <MovieList />
+        <Reports />
+
+        <div className="row mt-4">
+          <div className="col-md-6 mb-4">
+            <ChartCategory />
+          </div>
+          <div className="col-md-6 mb-4">
+            <ChartCalification />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

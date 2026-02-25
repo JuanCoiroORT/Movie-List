@@ -44,56 +44,68 @@ function AddMovie() {
   };
 
   return (
-    <div>
-      <h2>Agregar Película</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-        </div>
+    <div className="container py-4">
+      <div className="card shadow p-4 col-12 col-md-8 col-lg-6 mx-auto">
+        <h2 className="text-center mb-4">Agregar Película</h2>
 
-        <div>
-          <label>Categoría:</label>
-          <select
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-          >
-            <option value="">Seleccionar categoría</option>
-            {categories && categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Nombre:</label>
+            <input
+              type="text"
+              className="form-control"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Categoría:</label>
+            <select
+              className="form-select"
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
+            >
+              <option value="">Seleccionar categoría</option>
+              {categories &&
+                categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
                     {cat.nombre}
-                </option>
-            ))}
-          </select>
-        </div>
+                  </option>
+                ))}
+            </select>
+          </div>
 
-        <div>
-          <label>Fecha de Estreno:</label>
-          <input
-            type="date"
-            value={fecha}
-            max={hoy}
-            onChange={(e) => setFecha(e.target.value)}
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Fecha de Estreno:</label>
+            <input
+              type="date"
+              className="form-control"
+              value={fecha}
+              max={hoy}
+              onChange={(e) => setFecha(e.target.value)}
+            />
+          </div>
 
-        <div>
-          <label>Edad Mínima:</label>
-          <input
-            type="number"
-            value={edadMinima}
-            onChange={(e) => setEdadMinima(e.target.value)}
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Edad Mínima:</label>
+            <input
+              type="number"
+              className="form-control"
+              value={edadMinima}
+              onChange={(e) => setEdadMinima(e.target.value)}
+            />
+          </div>
 
-        <button type="submit" disabled={isDisabled}>
-          Agregar Película
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="btn btn-success w-100"
+            disabled={isDisabled}
+          >
+            Agregar Película
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
