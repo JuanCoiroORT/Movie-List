@@ -8,7 +8,9 @@ function Reports() {
     return (
       <div className="card shadow-sm p-4 mb-4 text-center">
         <h4 className="mb-3">Informes</h4>
-        <div className="alert alert-info text-center mb-0">No hay películas registradas aún</div>
+        <div className="alert alert-info text-center mb-0">
+          No hay películas registradas aún
+        </div>
       </div>
     );
   }
@@ -55,19 +57,23 @@ function Reports() {
     : "😐";
 
   return (
-    <div className="card shadow-sm p-4 mb-4">
-      <h4 className="text-center mb-4">Informes</h4>
+    <div className="dashboard-card">
+      <h2 className="dashboard-card-title">Informes</h2>
 
-      <div className="text-center mb-3">
-        <span className="fw-semibold">Categoría favorita:</span>
-        <div className="fs-5 mt-1">
-          {categoriaFavorita ? categoriaFavorita : "No hay categoría favorita"}
+      <div className="reports-container">
+        <div className="report-block">
+          <span className="report-label">Categoría favorita</span>
+          <div className="report-value">
+            {categoriaFavorita
+              ? categoriaFavorita
+              : "No hay categoría favorita"}
+          </div>
         </div>
-      </div>
 
-      <div className="text-center">
-        <span className="fw-semibold">Situación Personal:</span>
-        <div className="fs-2 mt-1">{emojiFavorito}</div>
+        <div className="report-block">
+          <span className="report-label">Situación Personal</span>
+          <div className="report-emoji">{emojiFavorito}</div>
+        </div>
       </div>
     </div>
   );

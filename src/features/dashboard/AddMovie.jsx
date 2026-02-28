@@ -2,23 +2,27 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addMovie } from "../movies/movieSlice";
 import { fetchMovies } from "../movies/movieSlice";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function AddMovie() {
   const dispatch = useDispatch();
   const [nombre, setNombre] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [fecha, setFecha] = useState("");
+  const [fecha, setFecha] = useState(null);
   const categories = useSelector((state) => state.movies.categories);
 
   const hoy = new Date().toISOString().split("T")[0];
 
   const isDisabled =
-    nombre.trim() === "" || categoria.trim() === "" || fecha.trim() === "";
+    nombre.trim() === "" || categoria.trim() === "";
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (fecha > hoy) {
+    const fechaFormateada = fecha ? fecha.toISOString().split("T")[0] : null;
+
+    if (fechaFormateada > hoy) {
       alert("La fecha no puede ser posterior a hoy");
       return;
     }
@@ -39,58 +43,55 @@ function AddMovie() {
   };
 
   return (
-    <div className="container py-4">
-      <div className="card shadow p-4 col-12 col-md-8 col-lg-6 mx-auto">
-        <h2 className="text-center mb-4">Agregar Película</h2>
+    <div className="dashboard-card">
+      <h2 className="dashboard-card-title">Agregar Película</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Nombre:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="dashboard-form">
+        <div className="form-group">
+          <label>Nombre</label>
+          <input
+            type="text"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
 
-          <div className="mb-3">
-            <label className="form-label">Categoría:</label>
-            <select
-              className="form-select"
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-            >
-              <option value="">Seleccionar categoría</option>
-              {categories &&
-                categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.nombre}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Fecha de Estreno:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fecha}
-              max={hoy}
-              onChange={(e) => setFecha(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-success w-100"
-            disabled={isDisabled}
+        <div className="form-group">
+          <label>Categoría</label>
+          <select
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
           >
-            Agregar Película
-          </button>
-        </form>
-      </div>
+            <option value="">Seleccionar categoría</option>
+            {categories &&
+              categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.nombre}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Fecha de Estreno</label>
+          <DatePicker
+            selected={fecha}
+            onChange={(date) => setFecha(date)}
+            maxDate={new Date()}
+            className="movie-date-input"
+            calendarClassName="custom-calendar"
+            dateFormat="yyyy-MM-dd"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="dashboard-button"
+          disabled={isDisabled}
+        >
+          Agregar Película
+        </button>
+      </form>
     </div>
   );
 }

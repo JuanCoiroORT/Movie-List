@@ -11,6 +11,8 @@ import ChartCategory from "./ChartCategory";
 import ChartCalification from "./ChartCalification";
 import { fetchMovies, fetchCategories } from "../movies/movieSlice";
 
+import "../../styles/dashboard.css";
+
 function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,31 +28,48 @@ function Dashboard() {
   };
 
   return (
-    <div className="container-fluid min-vh-100 bg-success-subtle py-4">
-      <div className="container">
-        <div className="d-flex justify-content-between align-items-center mb-4 ">
-          <h1 className="text-center flex-grow-1 m-0">Dashboard</h1>
-          <button
-            className="btn btn-danger ms-3"
-            onClick={handleLogout}
-          >
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        <header className="dashboard-header">
+          <h1>Dashboard</h1>
+
+          <button className="dashboard-logout" onClick={handleLogout}>
             Cerrar Sesión
           </button>
-        </div>
+        </header>
 
-        <AddMovie />
-        <Filters />
-        <MovieList />
-        <Reports />
+        {/* Agregar película */}
+        <section className="dashboard-block">
+          <AddMovie />
+        </section>
+        
+        {/* Filtro + Lista */}
+        <section className="dashboard-main dashboard-card">
+          <div className="dashboard-sidebar">
+            <Filters />
+          </div>
 
-        <div className="row mt-4">
-          <div className="col-md-6 mb-4">
+          <div className="dashboard-content">
+            <MovieList />
+          </div>
+        </section>
+
+
+        {/* Reportes */}
+        <section className="dashboard-block">
+          <Reports />
+        </section>
+
+        {/* Gráficos */}
+        <section className="dashboard-charts">
+          <div className="chart-card">
             <ChartCategory />
           </div>
-          <div className="col-md-6 mb-4">
+
+          <div className="chart-card">
             <ChartCalification />
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

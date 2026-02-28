@@ -27,29 +27,24 @@ function MovieList() {
   });
 
   return (
-    <div className="card shadow-sm p-4 mb-4">
-      <h4 className="text-center mb-4">Lista de Películas</h4>
+    <div className="dashboard-card">
+      <h2 className="dashboard-card-title">Lista de Películas</h2>
 
       {filteredMovies.length === 0 ? (
-        <div className="alert alert-info text-center mb-0">
-          No hay películas para mostrar
-        </div>
+        <div className="movie-empty">No hay películas para mostrar</div>
       ) : (
-        <ul className="list-group">
+        <ul className="movie-list">
           {filteredMovies.map((movie) => (
-            <li
-              key={movie.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <div>
+            <li key={movie.id} className="movie-item">
+              <div className="movie-info">
                 <strong>{movie.nombre}</strong>
-                <div className="text-muted small">
+                <span className="movie-meta">
                   {movie.categoria} — {movie.fechaEstreno}
-                </div>
+                </span>
               </div>
 
               <button
-                className="btn btn-danger btn-sm"
+                className="movie-delete"
                 onClick={() => dispatch(deleteMovie(movie.id))}
               >
                 Eliminar

@@ -39,37 +39,60 @@ export default function ChartCalification() {
   ];
 
   const total = ultimaSemana + ultimos30 + mayores30;
-  if(total === 0){
-    return(
+  if (total === 0) {
+    return (
       <div className="card shadow-sm p-4 mb-4 text-center">
         <h4 className="mb-3">Peliculas por Antigüedad</h4>
         <div className="alert alert-info text-center mb-0">
           No hay películas registradas aún
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="card shadow-sm p-4 mb-4">
-      <h4 className="text-center mb-4">Películas por Antigüedad</h4>
+    <div className="dashboard-card">
+      <h2 className="dashboard-card-title">Películas por Antigüedad</h2>
 
-      <div style={{ width: "100%", height: 300 }}>
+      <div className="chart-container">
         <ResponsiveContainer>
           <PieChart>
             <Pie
               data={data}
               dataKey="value"
               nameKey="name"
-              outerRadius={120}
-              label
+              outerRadius={110}
+              label={({ name, percent }) =>
+                `${name} (${(percent * 100).toFixed(0)}%)`
+              }
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    ["#14532d", "#166534", "#15803d", "#16a34a", "#22c55e"][
+                      index % 5
+                    ]
+                  }
+                />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#0f1f17",
+                border: "1px solid #14532d",
+                borderRadius: "8px",
+                color: "#bbf7d0",
+              }}
+              labelStyle={{ color: "#86efac" }}
+            />
+
+            <Legend
+              wrapperStyle={{
+                color: "#86efac",
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

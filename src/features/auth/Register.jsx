@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerUser, fetchCountries, clearError } from "./authSlice";
+import "../../styles/auth.css";
 
 function Register() {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const countries = useSelector((state) => state.auth.countries);
   const countriesStatus = useSelector((state) => state.auth.countriesStatus);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
@@ -63,35 +66,43 @@ function Register() {
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-success-subtle">
-      <div className="card shadow p-4 col-11 col-sm-8 col-md-5 col-lg-4">
-        <h2 className="text-center mb-4">Crear Cuenta</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Crear Cuenta</h1>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Username:</label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label>Username</label>
             <input
               type="text"
-              className="form-control"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password:</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="form-group">
+            <label>Password</label>
+
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Ocultar" : "Ver"}
+              </button>
+            </div>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Country:</label>
+          <div className="form-group">
+            <label>Country</label>
             <select
-              className="form-select"
               value={idCountry}
               onChange={(e) => setIdCountry(e.target.value)}
             >
@@ -105,23 +116,17 @@ function Register() {
           </div>
 
           {validationError && (
-            <div className="alert alert-danger mt-3" role="alert">
-              {validationError}
-            </div>
+            <div className="auth-error">{validationError}</div>
           )}
 
-          {error && (
-            <div className="alert alert-danger mt-3" role="alert">
-              {error}
-            </div>
-          )}
+          {error && <div className="auth-error">{error}</div>}
 
           <button
             type="submit"
-            className="btn btn-success w-100"
-            disabled={isDisabled}
+            className="auth-button"
+            disabled={isDisabled || loading}
           >
-            Registrarse
+            {loading ? "Creando..." : "Registrarse"}
           </button>
         </form>
       </div>

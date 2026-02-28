@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter } from "../movies/movieSlice";
 
+
 function Filters() {
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.movies.filter);
 
   return (
-    <div className="card shadow-sm p-3 mb-4 col-12 col-md-6 col-lg-4 mx-auto">
-      <h5 className="text-center mb-3">Filtro</h5>
+    <div className="dashboard-card dashboard-filter">
+      <h3 className="dashboard-card-title">Filtrar por fecha</h3>
 
       <select
-        className="form-select"
         value={filter}
         onChange={(e) => dispatch(setFilter(e.target.value))}
       >

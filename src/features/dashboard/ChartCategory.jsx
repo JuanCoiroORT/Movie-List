@@ -33,7 +33,7 @@ export default function ChartsCategory() {
   }));
 
   //No construir grafico mientras no haya peliculas ingresadas
-  if(data.length === 0){
+  if (data.length === 0) {
     return (
       <div className="card shadow-sm p-4 mb-4 text-center">
         <h4 className="mb-3">Películas por categoría</h4>
@@ -41,21 +41,29 @@ export default function ChartsCategory() {
           No hay películas registradas aún
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="card shadow-sm p-4 mb-4">
-      <h4 className="text-center mb-4">Películas por Categoría</h4>
+    <div className="dashboard-card">
+      <h2 className="dashboard-card-title">Películas por Categoría</h2>
 
-      <div style={{ width: "100%", height: 300 }}>
+      <div className="chart-container">
         <ResponsiveContainer>
           <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="categoria" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="cantidad" fill="#198754" />
+            <CartesianGrid stroke="rgba(34,197,94,0.1)" />
+            <XAxis dataKey="categoria" stroke="#86efac" />
+            <YAxis stroke="#86efac" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#0f1f17",
+                border: "1px solid #14532d",
+                borderRadius: "8px",
+                color: "#bbf7d0",
+              }}
+              labelStyle={{ color: "#86efac" }}
+            />
+            <Bar dataKey="cantidad" fill="#22c55e" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

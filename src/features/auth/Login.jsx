@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser, clearError } from "./authSlice";
+import "../../styles/auth.css";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,50 +32,52 @@ function Login() {
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-success-subtle">
-      <div className="card shadow p-4 col-11 col-sm-8 col-md-5 col-lg-4">
-        <h1 className="text-center mb-4 fs-4">Iniciar Sesión</h1>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Iniciar Sesión</h1>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Usuario:</label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label>Usuario</label>
             <input
               type="text"
-              className="form-control"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password:</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="form-group password-group">
+            <label>Password</label>
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Ocultar" : "Ver"}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            className="btn btn-success w-100"
+            className="auth-button"
             disabled={isDisabled || loading}
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
 
-          {error && (
-            <div className="alert alert-danger mt-3" role="alert">
-              {error}
-            </div>
-          )}
+          {error && <div className="auth-error">{error}</div>}
 
-          <p className="mt-3 text-center">
+          <p className="auth-register">
             ¿No tenés cuenta?{" "}
-            <Link to="/register" className="text-decoration-none">
-              Registrate acá
-            </Link>
+            <Link to="/register"> Registrate acá</Link>
           </p>
         </form>
       </div>

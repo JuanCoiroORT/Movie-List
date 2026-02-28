@@ -1,0 +1,157 @@
+/* ====== Variables globales ====== */
+:root {
+  --bg-dark: #0f1f17;
+  --card-dark: #162a20;
+  --green-primary: #22c55e;
+  --green-light: #4ade80;
+  --green-soft: #86efac;
+  --border-green: #22543d;
+  --error-bg: #3f1d1d;
+  --error-text: #f87171;
+}
+
+/* ====== Layout ====== */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-dark);
+}
+
+.auth-card {
+  background: var(--card-dark);
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  color: var(--green-light);
+}
+
+/* ====== Form ====== */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  color: var(--green-soft);
+}
+
+/* Inputs y Selects */
+.form-group input,
+.form-group select {
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-green);
+  background: var(--bg-dark);
+  color: #e6ffe6;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--green-light);
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.15);
+}
+
+/* Botones */
+.auth-button {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--green-primary);
+  color: var(--bg-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.auth-button:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mensajes de error */
+.auth-error {
+  padding: 0.6rem;
+  border-radius: 6px;
+  background: var(--error-bg);
+  color: var(--error-text);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ===== Password Toggle ===== */
+.password-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 70px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--green-light);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle-password:hover {
+  opacity: 0.7;
+}
+
+/* ===== Register Link ===== */
+.auth-register {
+  margin-top: 1.8rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--green-soft);
+}
+
+.auth-register a {
+  color: var(--green-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.auth-register a:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+/* uniform spacing para selects de register */
+.form-group select {
+  appearance: none;
+  cursor: pointer;
+}
