@@ -4,16 +4,17 @@ import { deleteMovie } from "../movies/movieSlice";
 function MovieList() {
   const dispatch = useDispatch();
 
-  const { list, filter } = useSelector((state) => state.movies);
+  const movies = useSelector((state) => state.movies.list);
+  const filter = useSelector((state) => state.movies.filter);
 
   const hoy = new Date();
 
-  const filteredMovies = list.filter((movie) => {
+  const filteredMovies = movies.filter((movie) => {
     if (filter === "all") return true;
 
-    if (!movie.fecha) return false;
+    if (!movie.fechaEstreno) return false;
 
-    const fechaPelicula = new Date(movie.fecha);
+    const fechaPelicula = new Date(movie.fechaEstreno);
     const diffTime = hoy.getTime() - fechaPelicula.getTime();
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
@@ -24,10 +25,6 @@ function MovieList() {
 
     return true;
   });
-
-  if (filteredMovies.length === 0) {
-    return <p>No hay películas registradas.</p>;
-  }
 
   return (
     <div className="card shadow-sm p-4 mb-4">

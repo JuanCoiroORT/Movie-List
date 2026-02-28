@@ -8,16 +8,12 @@ function AddMovie() {
   const [nombre, setNombre] = useState("");
   const [categoria, setCategoria] = useState("");
   const [fecha, setFecha] = useState("");
-  const [edadMinima, setEdadMinima] = useState("");
   const categories = useSelector((state) => state.movies.categories);
 
   const hoy = new Date().toISOString().split("T")[0];
 
   const isDisabled =
-    nombre.trim() === "" ||
-    categoria.trim() === "" ||
-    fecha.trim() === "" ||
-    edadMinima.trim() === "";
+    nombre.trim() === "" || categoria.trim() === "" || fecha.trim() === "";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,7 +36,6 @@ function AddMovie() {
     setNombre("");
     setCategoria("");
     setFecha("");
-    setEdadMinima("");
   };
 
   return (
@@ -84,16 +79,6 @@ function AddMovie() {
               value={fecha}
               max={hoy}
               onChange={(e) => setFecha(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Edad Mínima:</label>
-            <input
-              type="number"
-              className="form-control"
-              value={edadMinima}
-              onChange={(e) => setEdadMinima(e.target.value)}
             />
           </div>
 

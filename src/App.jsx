@@ -3,13 +3,25 @@ import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
 import Dashboard from "./features/dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route path="/register" element={
+          <PublicRoute>
+            <Register/>
+          </PublicRoute>
+        } />
         <Route
           path="/dashboard"
           element={

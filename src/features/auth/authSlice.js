@@ -36,8 +36,9 @@ export const loginUser = createAsyncThunk(
 //Thunk registro
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async ({ usuario, password, idPais }, { rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
+      console.log("Enviando", userData);
       const response = await fetch(
         "https://movielist.develotion.com/usuarios",
         {
@@ -45,7 +46,7 @@ export const registerUser = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ usuario, password, idPais }),
+          body: JSON.stringify(userData),
         },
       );
       const data = await response.json();
@@ -88,6 +89,9 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,7 +113,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null; // El backend no devuelve el usuario, así que lo dejamos como null
+        state.user = null; // El backend no devuelve el usuario, así que se deja como null
         state.token = action.payload.token;
 
         localStorage.setItem("token", action.payload.token);
@@ -125,7 +129,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null; // El backend no devuelve el usuario, así que lo dejamos como null
+        state.user = null; // El backend no devuelve el usuario, así que se deja como null
         state.token = action.payload.token;
 
         localStorage.setItem("token", action.payload.token);
@@ -137,5 +141,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearError } = authSlice.actions;
 export default authSlice.reducer;

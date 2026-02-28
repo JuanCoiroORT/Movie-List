@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "./authSlice";
+import { loginUser, clearError } from "./authSlice";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -13,6 +13,10 @@ function Login() {
   const { loading, error, token } = useSelector((state) => state.auth);
 
   const isDisabled = usuario.trim() === "" || password.trim() === "";
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

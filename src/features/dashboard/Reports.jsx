@@ -5,7 +5,12 @@ function Reports() {
   const categories = useSelector((state) => state.movies.categories);
 
   if (movies.length === 0 || categories.length === 0) {
-    return <p>No hay datos para mostrar informes</p>;
+    return (
+      <div className="card shadow-sm p-4 mb-4 text-center">
+        <h4 className="mb-3">Informes</h4>
+        <div className="alert alert-info text-center mb-0">No hay películas registradas aún</div>
+      </div>
+    );
   }
 
   // Mapeo de categorías a emojis
@@ -53,23 +58,17 @@ function Reports() {
     <div className="card shadow-sm p-4 mb-4">
       <h4 className="text-center mb-4">Informes</h4>
 
-      {categoriaFavorita ? (
-        <>
-          <div className="text-center mb-3">
-            <span className="fw-semibold">Categoría favorita:</span>
-            <div className="fs-5 mt-1">{categoriaFavorita}</div>
-          </div>
-
-          <div className="text-center">
-            <span className="fw-semibold">Situación Personal:</span>
-            <div className="fs-2 mt-1">{emojiFavorito}</div>
-          </div>
-        </>
-      ) : (
-        <div className="alert alert-info text-center mb-0">
-          No hay categoría favorita
+      <div className="text-center mb-3">
+        <span className="fw-semibold">Categoría favorita:</span>
+        <div className="fs-5 mt-1">
+          {categoriaFavorita ? categoriaFavorita : "No hay categoría favorita"}
         </div>
-      )}
+      </div>
+
+      <div className="text-center">
+        <span className="fw-semibold">Situación Personal:</span>
+        <div className="fs-2 mt-1">{emojiFavorito}</div>
+      </div>
     </div>
   );
 }

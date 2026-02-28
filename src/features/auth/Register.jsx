@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { registerUser, fetchCountries } from "./authSlice";
+import { registerUser, fetchCountries, clearError } from "./authSlice";
 
 function Register() {
   const dispatch = useDispatch();
@@ -13,6 +13,10 @@ function Register() {
   const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (token) {
       navigate("/dashboard");
     }
@@ -21,6 +25,7 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [idCountry, setIdCountry] = useState("");
+  const [validationError, setValidationError] = useState(null);
 
   //Traer países al cargar el componente
   useEffect(() => {
@@ -34,14 +39,21 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.length < 3) return;
-    if (password.length < 6) return;
+    if (username.length < 3) {
+      setValidationError("El usuario deb tener al menos 3 caracteres");
+      return;
+    }
+    if (password.length < 6) {
+      setValidationError("La password debe tener al menos 6 caracteres");
+      return;
+    }
+    setValidationError(null);
     try {
       await dispatch(
         registerUser({
           usuario: username,
           password: password,
-          idPais: idCountry,
+          idPais: parseInt(idCountry),
         }),
       ).unwrap();
       navigate("/dashboard");
@@ -91,6 +103,12 @@ function Register() {
               ))}
             </select>
           </div>
+
+          {validationError && (
+            <div className="alert alert-danger mt-3" role="alert">
+              {validationError}
+            </div>
+          )}
 
           {error && (
             <div className="alert alert-danger mt-3" role="alert">

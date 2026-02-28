@@ -22,7 +22,7 @@ export default function ChartsCategory() {
   //Conteo por categoria
   const conteo = movies.reduce((acc, movie) => {
     const nombreCategoria = categoryMap[movie.idCategoria] || "Sin categoría";
-    acc[nombreCategoria] = (acc[movie.categoria] || 0) + 1;
+    acc[nombreCategoria] = (acc[nombreCategoria] || 0) + 1;
     return acc;
   }, {});
 
@@ -31,6 +31,18 @@ export default function ChartsCategory() {
     categoria,
     cantidad: conteo[categoria],
   }));
+
+  //No construir grafico mientras no haya peliculas ingresadas
+  if(data.length === 0){
+    return (
+      <div className="card shadow-sm p-4 mb-4 text-center">
+        <h4 className="mb-3">Películas por categoría</h4>
+        <div className="alert alert-info text-center mb-0">
+          No hay películas registradas aún
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="card shadow-sm p-4 mb-4">

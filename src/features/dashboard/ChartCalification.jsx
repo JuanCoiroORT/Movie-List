@@ -13,8 +13,6 @@ const COLORS = ["#52c41a", "#1890ff", "#faad14"];
 export default function ChartCalification() {
   const movies = useSelector((state) => state.movies.list);
 
-  if (movies.length === 0) return null;
-
   const hoy = new Date();
 
   let ultimaSemana = 0;
@@ -24,8 +22,6 @@ export default function ChartCalification() {
   movies.forEach((movie) => {
     const fecha = new Date(movie.fechaEstreno + "T00:00:00");
     const diffDays = (hoy.getTime() - fecha.getTime()) / (1000 * 60 * 60 * 24);
-
-    console.log(movie.fechaEstreno, diffDays);
 
     if (diffDays <= 7) {
       ultimaSemana++;
@@ -41,6 +37,18 @@ export default function ChartCalification() {
     { name: "Últimos 30 días", value: ultimos30 },
     { name: "Más de 30 días", value: mayores30 },
   ];
+
+  const total = ultimaSemana + ultimos30 + mayores30;
+  if(total === 0){
+    return(
+      <div className="card shadow-sm p-4 mb-4 text-center">
+        <h4 className="mb-3">Peliculas por Antigüedad</h4>
+        <div className="alert alert-info text-center mb-0">
+          No hay películas registradas aún
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="card shadow-sm p-4 mb-4">
