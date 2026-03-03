@@ -3,12 +3,12 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../auth/authSlice";
 
-import AddMovie from "./AddMovie";
-import MovieList from "./MovieList";
-import Filters from "./Filters";
-import Reports from "./Reports";
-import ChartCategory from "./ChartCategory";
-import ChartCalification from "./ChartCalification";
+import AddMovie from "../movies/AddMovie";
+import MovieList from "../movies/MovieList";
+import Filters from "../movies/Filters";
+import Reports from "../movies/Reports";
+import ChartCategory from "../movies/ChartCategory";
+import ChartCalification from "../movies/ChartCalification";
 import { fetchMovies, fetchCategories } from "../movies/movieSlice";
 
 import "../../styles/dashboard.css";

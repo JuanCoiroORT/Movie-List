@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useMemo } from "react";
-import { deleteMovie } from "../movies/movieSlice";
+import { deleteMovie } from "./movieSlice";
 
 function MovieList() {
   const dispatch = useDispatch();

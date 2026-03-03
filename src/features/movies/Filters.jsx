@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "../movies/movieSlice";
+import { setFilter } from "./movieSlice";
 
 function Filters() {
   //Hook

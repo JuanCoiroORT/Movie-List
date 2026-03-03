@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addMovie } from "../movies/movieSlice";
-import { fetchMovies } from "../movies/movieSlice";
+import { addMovie } from "./movieSlice";
+import { fetchMovies } from "./movieSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
