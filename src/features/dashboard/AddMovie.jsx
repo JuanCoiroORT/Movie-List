@@ -27,7 +27,7 @@ function AddMovie() {
   const handleCategoriaChange = ({ target }) => {
     setCategoria(target.value);
   };
-  const handleFechaChange = ({ target }) => {
+  const handleFechaChange = (date) => {
     setFecha(date);
   };
 
@@ -45,10 +45,10 @@ function AddMovie() {
     const newMovie = {
       idCategoria: parseInt(categoria),
       nombre,
-      fecha: fechaFormateada,
+      fechaEstreno: fechaFormateada,
     };
 
-    await dispatch(addMovie(newMovie)).unwarp();
+    await dispatch(addMovie(newMovie)).unwrap();
 
     dispatch(fetchMovies());
 

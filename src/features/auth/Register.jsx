@@ -16,7 +16,7 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, token, countries, countriesStatus } = use(
+  const { loading, error, token, countries, countriesStatus } = useSelector(
     (state) => state.auth,
   );
 

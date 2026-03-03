@@ -1,21 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-//Thunk paises
+const API_URL = "https://movielist.develotion.com";
+
+//THUNKS
+
+//Obtener paises
 export const fetchCountries = createAsyncThunk(
   "auth/fetchCountries",
-  async () => {
-    const response = await fetch("https://movielist.develotion.com/paises");
-    const data = await response.json();
-    return data.paises;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/paises`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data.mensaje || "Error al obtener paises");
+      }
+      return data.paises;
+    } catch {
+      return rejectWithValue("Error de conexion");
+    }
   },
 );
 
-//Thunk login
+//Login
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ usuario, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch("https://movielist.develotion.com/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,22 +45,18 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-//Thunk registro
+//Registro
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      console.log("Enviando", userData);
-      const response = await fetch(
-        "https://movielist.develotion.com/usuarios",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
+      const response = await fetch(`${API_URL}/usuarios`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(userData),
+      });
       const data = await response.json();
       if (!response.ok) {
         return rejectWithValue(data.mensaje);
@@ -60,9 +68,10 @@ export const registerUser = createAsyncThunk(
   },
 );
 
+//Estados iniciales
 const savedToken = localStorage.getItem("token");
-let savedUser = null;
 
+let savedUser = null;
 try {
   const rawUser = localStorage.getItem("user");
   savedUser = rawUser ? JSON.parse(rawUser) : null;
@@ -79,6 +88,7 @@ const initialState = {
   countriesStatus: "idle",
 };
 
+//Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -95,7 +105,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //Casos fetch paises
+      //Fetch paises
       .addCase(fetchCountries.pending, (state) => {
         state.countriesStatus = "loading";
       })
@@ -103,20 +113,23 @@ const authSlice = createSlice({
         state.countriesStatus = "succeeded";
         state.countries = action.payload;
       })
-      .addCase(fetchCountries.rejected, (state) => {
+      .addCase(fetchCountries.rejected, (state, action) => {
         state.countriesStatus = "failed";
+        state.error = action.payload;
       })
-      //Casos login
+
+      //Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null; // El backend no devuelve el usuario, así que se deja como null
+        state.user = { usuario: action.meta.arg.usuario };
         state.token = action.payload.token;
 
-        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("token", state.token);
+        localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -129,10 +142,11 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null; // El backend no devuelve el usuario, así que se deja como null
         state.token = action.payload.token;
+        state.user = { usuario: action.meta.arg.usuario };
 
-        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("token", state.token);
+        localStorage.setItem("user", JSON.stringify(state.user));
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
