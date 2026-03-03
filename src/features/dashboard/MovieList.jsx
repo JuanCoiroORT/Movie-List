@@ -1,30 +1,38 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useMemo } from "react";
 import { deleteMovie } from "../movies/movieSlice";
 
 function MovieList() {
   const dispatch = useDispatch();
 
+  //Estados globales
   const movies = useSelector((state) => state.movies.list);
   const filter = useSelector((state) => state.movies.filter);
 
-  const hoy = new Date();
+  const filteredMovies = useMemo(() => {
+    if (!movies.length) return [];
 
-  const filteredMovies = movies.filter((movie) => {
-    if (filter === "all") return true;
+    const today = new Date();
 
-    if (!movie.fechaEstreno) return false;
+    return movies.filter((movie) => {
+      if (filter === "all") return true;
 
-    const fechaPelicula = new Date(movie.fechaEstreno);
-    const diffTime = hoy.getTime() - fechaPelicula.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      if (!movie.fechaEstreno) return false;
 
-    if (diffDays < 0) return false;
+      const fechaPelicula = new Date(movie.fechaEstreno);
 
-    if (filter === "week") return diffDays <= 7;
-    if (filter === "month") return diffDays <= 30;
+      //Diferencia en dias
+      const diffDays =
+        (today.getTime() - fechaPelicula.getTime()) / (1000 * 60 * 60 * 24);
 
-    return true;
-  });
+        if (diffDays < 0) return false;
+
+        if(filter === "week") return diffDays <= 7;
+        if(filter === "month") return diffDays <= 30;
+
+        return true;
+    });
+  }, [movies, filter]);
 
   return (
     <div className="dashboard-card">
@@ -38,6 +46,7 @@ function MovieList() {
             <li key={movie.id} className="movie-item">
               <div className="movie-info">
                 <strong>{movie.nombre}</strong>
+                
                 <span className="movie-meta">
                   {movie.categoria} — {movie.fechaEstreno}
                 </span>

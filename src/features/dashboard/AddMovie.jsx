@@ -6,23 +6,38 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function AddMovie() {
-  const dispatch = useDispatch();
+  //Estados locales
   const [nombre, setNombre] = useState("");
   const [categoria, setCategoria] = useState("");
   const [fecha, setFecha] = useState(null);
+
+  //Hooks
+  const dispatch = useDispatch();
+
   const categories = useSelector((state) => state.movies.categories);
 
   const hoy = new Date().toISOString().split("T")[0];
 
-  const isDisabled =
-    nombre.trim() === "" || categoria.trim() === "";
+  const isDisabled = nombre.trim() === "" || categoria.trim() === "";
 
-  const handleSubmit = (e) => {
+  //Handlers separados
+  const handleNombreChange = ({ target }) => {
+    setNombre(target.value);
+  };
+  const handleCategoriaChange = ({ target }) => {
+    setCategoria(target.value);
+  };
+  const handleFechaChange = ({ target }) => {
+    setFecha(date);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const fechaFormateada = fecha ? fecha.toISOString().split("T")[0] : null;
 
-    if (fechaFormateada > hoy) {
+    //Validacion
+    if (fechaFormateada && fechaFormateada > hoy) {
       alert("La fecha no puede ser posterior a hoy");
       return;
     }
@@ -30,18 +45,19 @@ function AddMovie() {
     const newMovie = {
       idCategoria: parseInt(categoria),
       nombre,
-      fecha,
+      fecha: fechaFormateada,
     };
 
-    dispatch(addMovie(newMovie)).then(() => {
-      dispatch(fetchMovies());
-    });
+    await dispatch(addMovie(newMovie)).unwarp();
+
+    dispatch(fetchMovies());
 
     setNombre("");
     setCategoria("");
-    setFecha("");
+    setFecha(null);
   };
 
+  //Renderizado
   return (
     <div className="dashboard-card">
       <h2 className="dashboard-card-title">Agregar Película</h2>
@@ -49,26 +65,18 @@ function AddMovie() {
       <form onSubmit={handleSubmit} className="dashboard-form">
         <div className="form-group">
           <label>Nombre</label>
-          <input
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
+          <input type="text" value={nombre} onChange={handleNombreChange} />
         </div>
 
         <div className="form-group">
           <label>Categoría</label>
-          <select
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-          >
+          <select value={categoria} onChange={handleCategoriaChange}>
             <option value="">Seleccionar categoría</option>
-            {categories &&
-              categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.nombre}
-                </option>
-              ))}
+            {categories?.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nombre}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -76,7 +84,7 @@ function AddMovie() {
           <label>Fecha de Estreno</label>
           <DatePicker
             selected={fecha}
-            onChange={(date) => setFecha(date)}
+            onChange={handleFechaChange}
             maxDate={new Date()}
             className="movie-date-input"
             calendarClassName="custom-calendar"

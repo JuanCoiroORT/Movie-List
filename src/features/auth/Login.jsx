@@ -5,32 +5,43 @@ import { loginUser, clearError } from "./authSlice";
 import "../../styles/auth.css";
 
 function Login() {
+  // Estados locales
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  //Hooks de librerias
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, token } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.auth);
 
   const isDisabled = usuario.trim() === "" || password.trim() === "";
 
+  // Effect, para limpiar errores al montar componente
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
+  // Handlers
+  const handleUsuarioChange = ({ target }) => {
+    setUsuario(target.value);
+  };
+  const handlePasswordChange = ({ target }) => {
+    setPassword(target.value);
+  };
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      await dispatch(loginUser({ usuario, password })).unwrap();
-      navigate("/dashboard");
-    } catch (error) {
-      // Redux maneja el error en el estado, así que no es necesario hacer nada aquí
-    }
+    await dispatch(loginUser({ usuario, password })).unwrap();
+    navigate("/dashboard");
   };
 
+  //Renderizado
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -42,7 +53,7 @@ function Login() {
             <input
               type="text"
               value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
+              onChange={handleUsuarioChange}
             />
           </div>
 
@@ -52,13 +63,13 @@ function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
 
               <button
                 type="button"
                 className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={togglePassword}
               >
                 {showPassword ? "Ocultar" : "Ver"}
               </button>
@@ -76,8 +87,7 @@ function Login() {
           {error && <div className="auth-error">{error}</div>}
 
           <p className="auth-register">
-            ¿No tenés cuenta?{" "}
-            <Link to="/register"> Registrate acá</Link>
+            ¿No tenés cuenta? <Link to="/register"> Registrate acá</Link>
           </p>
         </form>
       </div>

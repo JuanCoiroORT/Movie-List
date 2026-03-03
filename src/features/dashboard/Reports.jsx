@@ -1,21 +1,12 @@
 import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
 function Reports() {
-  const movies = useSelector((state) => state.movies.list);
-  const categories = useSelector((state) => state.movies.categories);
+  //Estados globales
+  const movies = useSelector((state) => state.movies.list) || [];
+  const categories = useSelector((state) => state.movies.categories) || [];
 
-  if (movies.length === 0 || categories.length === 0) {
-    return (
-      <div className="card shadow-sm p-4 mb-4 text-center">
-        <h4 className="mb-3">Informes</h4>
-        <div className="alert alert-info text-center mb-0">
-          No hay películas registradas aún
-        </div>
-      </div>
-    );
-  }
-
-  // Mapeo de categorías a emojis
+  // Mapeo de emojis
   const categoriaEmojis = {
     Acción: "💪",
     Drama: "😭",
@@ -29,33 +20,54 @@ function Reports() {
     Fantasía: "🧙‍♂️",
   };
 
-  //Mapear idCateoria de la pelicula al nombre de la categoria
-  const moviesConNombreCategoria = movies.map((movie) => {
-    const cat = categories.find((c) => c.id === movie.idCategoria);
-    return { ...movie, categoria: cat ? cat.nombre : "Sin categoría" };
-  });
+  //Calculo memoizado
+  const { categoriaFavorita, emojiFavorito } = useMemo(() => {
+    if (!movies.length || !categories.length) {
+      return { categoriaFavorita: null, emojiFavorito: "😐" };
+    }
 
-  //Conteo por categoria
-  const conteo = {};
-  moviesConNombreCategoria.forEach((movie) => {
-    const nombreCategoria = movie.categoria;
-    conteo[nombreCategoria] = (conteo[nombreCategoria] || 0) + 1;
-  });
+    //Crear mapa
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.nombre;
+      return acc;
+    }, {});
 
-  //Determinar categoria favorita
-  const valores = Object.values(conteo);
-  const maxCantidad = Math.max(...valores);
-  const categoriasConMax = Object.keys(conteo).filter(
-    (categoria) => conteo[categoria] === maxCantidad,
-  );
-  let categoriaFavorita =
-    categoriasConMax.length === 1 ? categoriasConMax[0] : null;
+    // Conteo por categoria
+    const conteo = movies.reduce((acc, movie) => {
+      const nombreCategoria = categoryMap[movie.idCategoria] || "Sin categoría";
 
-  //Emoji segun categoria favorita
-  const emojiFavorito = categoriaFavorita
-    ? categoriaEmojis[categoriaFavorita]
-    : "😐";
+      acc[nombreCategoria] = (acc[nombreCategoria] || 0) + 1;
+      return acc;
+    }, {});
 
+    //Determinar categoria con mayor cantidad
+    const maxCantidad = Math.max(...Object.values(conteo));
+
+    const categoriasConMax = Object.keys(conteo).filter(
+      (categoria) => conteo[categoria] === maxCantidad,
+    );
+
+    const categoriaFavorita =
+      categoriasConMax.length === 1 ? categoriasConMax[0] : null;
+
+    const emojiFavorito = categoriaFavorita
+      ? categoriaEmojis[categoriaFavorita] || "🎬"
+      : "😐";
+    return { categoriaFavorita, emojiFavorito };
+  }, [movies, categories]);
+  //Validacion visual
+  if (!movies.length || !categories.length) {
+    return (
+      <div className="dashboard-card">
+        <h2 className="dashboard-card-title">Informes</h2>
+        <div className="alert alert-info text-center mb-0">
+          No hay películas registradas aún
+        </div>
+      </div>
+    );
+  }
+
+  //Renderizado
   return (
     <div className="dashboard-card">
       <h2 className="dashboard-card-title">Informes</h2>

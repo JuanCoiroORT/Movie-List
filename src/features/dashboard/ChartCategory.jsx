@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import {
   BarChart,
@@ -10,33 +11,40 @@ import {
 } from "recharts";
 
 export default function ChartsCategory() {
-  const movies = useSelector((state) => state.movies.list);
-  const categories = useSelector((state) => state.movies.categories);
+  //State global
+  const { list: movies, categories } = useSelector((state) => state.movies);
 
-  //Mapear idCategoria a nombre
-  const categoryMap = categories.reduce((acc, cat) => {
-    acc[cat.id] = cat.nombre;
-    return acc;
-  }, {});
+  //Calculo memoizado
+  const data = useMemo(() => {
+    if (!movies.length) return [];
 
-  //Conteo por categoria
-  const conteo = movies.reduce((acc, movie) => {
-    const nombreCategoria = categoryMap[movie.idCategoria] || "Sin categoría";
-    acc[nombreCategoria] = (acc[nombreCategoria] || 0) + 1;
-    return acc;
-  }, {});
+    //Mapear idCategoria a nombre
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.nombre;
+      return acc;
+    }, {});
 
-  //Transformar a formato para recharts
-  const data = Object.keys(conteo).map((categoria) => ({
-    categoria,
-    cantidad: conteo[categoria],
-  }));
+    //Conteo por categoria
+    const conteo = movies.reduce((acc, movie) => {
+      const nombreCategoria = categoryMap[movie.idCategoria] || "Sin categoria";
 
-  //No construir grafico mientras no haya peliculas ingresadas
+      acc[nombreCategoria] = (acc[nombreCategoria] || 0) + 1;
+      return acc;
+    }, {});
+
+    //Transformar objeto en recharts
+    return Object.keys(conteo).map((categoria) => ({
+      categoria,
+      cantidad: conteo[categoria],
+    }));
+  }, [movies, categories]);
+
+  // Validacion sin datos
   if (data.length === 0) {
     return (
-      <div className="card shadow-sm p-4 mb-4 text-center">
-        <h4 className="mb-3">Películas por categoría</h4>
+      <div className="dashboard-card">
+        <h2 className="dashboard-card-title">Películas por Categoría</h2>
+
         <div className="alert alert-info text-center mb-0">
           No hay películas registradas aún
         </div>
@@ -44,6 +52,7 @@ export default function ChartsCategory() {
     );
   }
 
+  // Renderizado
   return (
     <div className="dashboard-card">
       <h2 className="dashboard-card-title">Películas por Categoría</h2>

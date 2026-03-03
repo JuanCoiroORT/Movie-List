@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import {
   PieChart,
@@ -8,41 +9,47 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#52c41a", "#1890ff", "#faad14"];
-
 export default function ChartCalification() {
-  const movies = useSelector((state) => state.movies.list);
+  //State global
+  const { list: movies } = useSelector((state) => state.movies);
 
-  const hoy = new Date();
+  //Calculo memoizado
+  const data = useMemo(() => {
+    const today = new Date();
 
-  let ultimaSemana = 0;
-  let ultimos30 = 0;
-  let mayores30 = 0;
+    let ultimaSemana = 0;
+    let ultimos30 = 0;
+    let mayores30 = 0;
 
-  movies.forEach((movie) => {
-    const fecha = new Date(movie.fechaEstreno + "T00:00:00");
-    const diffDays = (hoy.getTime() - fecha.getTime()) / (1000 * 60 * 60 * 24);
+    movies.forEach((movie) => {
+      if (!movie.fechaEstreno) return;
 
-    if (diffDays <= 7) {
-      ultimaSemana++;
-    } else if (diffDays <= 30) {
-      ultimos30++;
-    } else {
-      mayores30++;
-    }
-  });
+      const fecha = new Date(movie.fechaEstreno + "T00:00:00");
+      const diffDays =
+        (today.getTime() - fecha.getTime()) / (1000 * 60 * 60 * 24);
 
-  const data = [
-    { name: "Última semana", value: ultimaSemana },
-    { name: "Últimos 30 días", value: ultimos30 },
-    { name: "Más de 30 días", value: mayores30 },
-  ];
+      if (diffDays <= 7) {
+        ultimaSemana++;
+      } else if (diffDays <= 30) {
+        ultimos30++;
+      } else {
+        mayores30++;
+      }
+    });
+    return [
+      { name: "Última semana", value: ultimaSemana },
+      { name: "Últimos 30 días", value: ultimos30 },
+      { name: "Más de 30 días", value: mayores30 },
+    ];
+  }, [movies]);
 
-  const total = ultimaSemana + ultimos30 + mayores30;
+  //Validacion sin datos
+  const total = data.reduce((acc, item) => acc + item.value, 0);
+
   if (total === 0) {
     return (
-      <div className="card shadow-sm p-4 mb-4 text-center">
-        <h4 className="mb-3">Peliculas por Antigüedad</h4>
+      <div className="dashboard-card">
+        <h2 className="dashboard-card-title">Películas por Antigüedad</h2>
         <div className="alert alert-info text-center mb-0">
           No hay películas registradas aún
         </div>
@@ -50,6 +57,7 @@ export default function ChartCalification() {
     );
   }
 
+  //Renderizado
   return (
     <div className="dashboard-card">
       <h2 className="dashboard-card-title">Películas por Antigüedad</h2>
